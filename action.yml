@@ -1,0 +1,65 @@
+name: 📝 Generate README
+
+inputs:
+  token:
+    description: 'GitHub PAT token'
+    required: true
+  commit_message:
+    description: 'Commit message'
+    required: false
+    default: 'docs: update README.md'
+  output:
+    description: 'Output file'
+    required: false
+    default: 'README.md'
+  template:
+    description: 'Template file'
+    required: false
+    default: 'README.tmpl.md'
+  files:
+    description: 'Files to include'
+    required: false
+    default: 'docker-compose.yml'
+  git_user:
+    description: 'GitHub user'
+    required: false
+    default: 'github-actions[bot]'
+  git_email:
+    description: 'GitHub email'
+    required: false
+    default: 'github-actions[bot]@users.noreply.github.com'
+
+runs:
+  using: composite
+
+  steps:
+    - name: 🐍 Install Python
+      uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+      with:
+        python-version: '3.13'
+
+    - name: 📦 Install PyYAML
+      shell: bash
+      run: |
+        pip install -r ${{ github.action_path }}/requirements.txt
+        
+    - name: 📝 Generate README
+      shell: bash
+      run: |
+        shopt -s globstar nullglob
+        python ${{ github.action_path }}/generate.py \
+          --output ${{ inputs.output }} \
+          --template ${{ inputs.template }} \
+          ${{ inputs.files }}
+        shopt -u globstar nullglob
+
+    - name: 🚀 Commit & Push README
+      shell: bash
+      run: |
+        git pull
+        git config --global user.name '${{ inputs.git_user }}'
+        git config --global user.email '${{ inputs.git_email }}'
+        git remote set-url origin https://x-access-token:${{ inputs.token }}@github.com/$GITHUB_REPOSITORY
+        git add ${{ inputs.output }}
+        git commit -m "${{ inputs.commit_message }}" || true
+        git push
