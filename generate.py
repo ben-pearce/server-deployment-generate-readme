@@ -116,19 +116,15 @@ if __name__ == '__main__':
         count = 0
         with open(file_name, 'r', encoding="utf-8") as f:
             for line in filter(lambda v: v.strip(), f.readlines()):
-                if line.startswith('# ex: '):
-                    example = line.removeprefix('# ex: ').strip()
-                elif line.startswith('#'):
+                if line.startswith('#'):
                     comment = line.strip('# ').strip()
                 else:
-                    value = line.split('=')[0]
+                    value, example = line.split('=')
                     env_rows.append(ENV_TEMPLATE.format(
-                        f'`{value}`', comment, f'`{example}`'
-                        if example else ''
+                        f'`{value}`', comment, f'`{example.strip()}`'
                     ))
                     count += 1
                     comment = str()
-                    example = str()
         logger.info('processed %d variables in %s', count, file_name)
 
     logger.info('reading README template')
