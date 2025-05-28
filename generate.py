@@ -12,13 +12,6 @@ CONTAINER_TEMPLATE = '| [{}]({}) {} | {} | {} | {} |'
 ENV_TEMPLATE = '| {} | {} | {} |'
 
 notes = [
-    # predicate, tag, description
-    (
-        lambda s: any(
-            v.startswith('${MEDIA_DIR}')
-            for v in s.get('volumes', [])),
-        'Assumes mass storage available, mounted at MEDIA_DIR on the host.'
-    ),
     (
         lambda s: s.get('network_mode', None) == 'service:tunnel',
         'All traffic is routed via tunnel VPN client container.'
@@ -113,7 +106,7 @@ if __name__ == '__main__':
     containers = '\n'.join(container_rows) + '\n\n'
     containers += '\n\n'.join(sorted([
         f'<sup>{str(tag + 1)}</sup>{notes[i][1]}'
-        for i, tag in enumerate(mapped_tags)
+        for tag, i in enumerate(mapped_tags)
     ]))
 
     for file_name in sorted(glob.glob('.env.*')):
