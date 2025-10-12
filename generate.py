@@ -13,8 +13,8 @@ ENV_TEMPLATE = '| {} | {} | {} |'
 
 notes = [
     (
-        lambda s: s.get('network_mode', None) == 'service:tunnel',
-        'All traffic is routed via tunnel VPN client container.'
+        lambda s: s.get('network_mode', None) == 'service:gluetun',
+        'All traffic is routed via gluetun VPN client container.'
     )
 ]
 
