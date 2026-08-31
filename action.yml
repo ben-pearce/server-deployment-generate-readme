@@ -1,4 +1,5 @@
 name: 📝 Generate README
+description: Automated README templating for compose deployment repositories
 
 inputs:
   token:
