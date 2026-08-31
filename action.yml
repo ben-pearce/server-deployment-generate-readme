@@ -4,7 +4,7 @@ description: Automated README templating for compose deployment repositories
 inputs:
   token:
     description: 'GitHub PAT token'
-    required: true
+    required: false
   commit_message:
     description: 'Commit message'
     required: false
